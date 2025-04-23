@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Agriculture Detector</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <div class="container">
+    <h1>Agriculture Detector</h1>
+
+    {% if error %}
+      <p class="error">{{ error }}</p>
+    {% endif %}
+
+    <form method="POST" enctype="multipart/form-data" id="uploadForm">
+        <label for="file-upload" class="custom-file-upload">
+          📁 Choose Image
+        </label>
+        <input id="file-upload" type="file" name="file" accept="image/*" required onchange="previewImage(event)" />
+        <span id="file-name" class="file-name">No file selected</span>
+        <button type="submit">🚀 Upload and Detect</button>
+    </form>
+
+    {% if not render_result %}
+    <div id="preview-container" class="image-box" style="display:none;">
+      <h2>Preview</h2>
+      <img id="preview" src="#" alt="Preview" />
+    </div>
+    {% endif %}
+
+    {% if render_result %}
+      <div class="image-box">
+        <h2>🧠 Detection Result</h2>
+        <img src="data:image/png;base64,{{ detection_img_data }}" alt="Detection Image" />
+      </div>
+    {% endif %}
+  </div>
+
+  <script>
+  function previewImage(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    document.getElementById("file-name").textContent = file.name;
+
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const preview = document.getElementById("preview");
+      const previewContainer = document.getElementById("preview-container");
+      preview.src = e.target.result;
+      preview.style.display = "block";
+      previewContainer.style.display = "block";
+    };
+    reader.readAsDataURL(file);
+  }
+</script>
+
+</body>
+</html>
